@@ -1,8 +1,9 @@
 "use client"
 
-import React from 'react'
+import React, { useState } from 'react'
 import NavButton from './nav-button'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
+import { useMedia } from 'react-use'
 
 const routes = [
     {
@@ -28,7 +29,12 @@ const routes = [
 ]
 
 const Navigation = () => {
-    const pathname = usePathname()
+    const [isOpen, setIsOpen] = useState(false);
+
+    const router = useRouter()
+    const pathname = usePathname();
+    const isMobile = useMedia("(max-width:1024)", false)
+
   return (
     <nav className='hidden lg:flex items-center gap-x-2 overflow-x-auto'>
         {routes.map((route) => (
@@ -38,7 +44,7 @@ const Navigation = () => {
             label={route.label}
             isActive={pathname === route.href}
 
-                >{route.label}</NavButton>
+                />
         ))}
     </nav>
   )

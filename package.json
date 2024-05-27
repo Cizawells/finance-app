@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "db:generate": "drizzle-kit generate:pg --schema db/schema.ts --out ./drizzle",
+    "db:migrate": "tsx ./script/migrate.ts",
+    "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
     "@clerk/backend": "^1.2.1",
@@ -26,7 +29,8 @@
     "react-dom": "^18",
     "react-use": "^17.5.0",
     "tailwind-merge": "^2.3.0",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "tsx": "^4.11.0"
   },
   "devDependencies": {
     "@types/node": "^20",

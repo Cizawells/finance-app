@@ -1,4 +1,5 @@
 import { QueryProvider } from "@/providers/query-provider";
+import SheetProvider from "@/providers/sheet-provider";
 import {
   ClerkProvider
 } from '@clerk/nextjs';
@@ -23,6 +24,7 @@ export default function RootLayout({
     <html lang="en">
         <body className={inter.className}>
           <QueryProvider>
+            <SheetProvider />
           {children}
           </QueryProvider>
         </body>

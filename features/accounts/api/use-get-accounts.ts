@@ -13,6 +13,7 @@ export const useGetAccounts = () => {
             }
 
             const { data } = await response.json();
+            console.log("datttt", data)
             return data
         }
     })

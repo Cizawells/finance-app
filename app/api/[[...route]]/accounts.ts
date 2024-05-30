@@ -16,12 +16,13 @@ const app = new Hono()
                     return c.json({ error: "Unauthorized" }, 401)
  
             }
-        const data = await db
-            .select({
-                id: accounts.id,
-                name: accounts.name
-            }).from(accounts)
-            .where(eq(accounts.id, auth.userId))
+            const data = await db
+                .select({
+                    id: accounts.id,
+                    name: accounts.name
+                }).from(accounts)
+                .where(eq(accounts.userId, auth.userId));
+            console.log("datttta", data)
     return c.json({ data })
         })
     .post(

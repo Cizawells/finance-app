@@ -39,6 +39,7 @@ function AccountsPage() {
                       columns={columns}
                       data={data}
                       filterKey="email"
+                      onDelete={() => {}}
                   />
               </CardContent>
           </Card>

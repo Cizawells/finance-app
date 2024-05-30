@@ -1,12 +1,25 @@
 "use client"
 
+import { DataTable } from "@/components/data-table"
 import { Button } from "@/components/ui/button"
 import {
     Card,
+    CardContent,
     CardHeader,
     CardTitle
 } from "@/components/ui/card"
 import { useNewAccount } from "@/features/accounts/hooks/use-new-account"
+import { Payment, columns } from "./columns"
+
+
+const data:Payment[] = [
+  {
+      id: "728ed52f",
+      amount: 100,
+      status: "pending",
+      email: "m@example.com",
+    },
+]
 
 function AccountsPage() {
     const newAccount = useNewAccount()
@@ -21,6 +34,9 @@ function AccountsPage() {
                       Add new
                   </Button>
               </CardHeader>
+              <CardContent>
+                <DataTable columns={columns} data={data}/>
+              </CardContent>
           </Card>
     </div>
   )

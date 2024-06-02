@@ -15,6 +15,13 @@
       "when": 1716889412962,
       "tag": "0001_complete_warpath",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1717340101032,
+      "tag": "0002_elite_wallflower",
+      "breakpoints": true
     }
   ]
 }

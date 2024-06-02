@@ -4,9 +4,9 @@ import { useConfirm } from "@/hooks/use-confirm";
 import { Loader2 } from "lucide-react";
 import { z } from "zod";
 import { useDeleteAccount } from "../api/use-delete-account";
-import { useEditAccount } from "../api/use-edit-account";
-import { useGetAccount } from "../api/use-get-account";
-import { useOpenAccount } from "../hooks/use-open-category";
+import { useEditCategory } from "../api/use-edit-category";
+import { useGetCategory } from "../api/use-get-category";
+import { useOpenCategory } from "../hooks/use-open-category";
 import { AccountForm } from "./account-form";
 
 const formSchema = insertAccountSchema.pick({
@@ -16,15 +16,15 @@ const formSchema = insertAccountSchema.pick({
 type FormValues = z.input<typeof formSchema>;
 
 function EditAccountSheet() {
-    const { isOpen, onClose, id } = useOpenAccount();
+    const { isOpen, onClose, id } = useOpenCategory();
 
     const [ConfirmDialog, confirm] = useConfirm(
         "Are you sure?",
         "You are about to delete this transaction"
     )
 
-    const accountQuery = useGetAccount(id);
-    const editMutation = useEditAccount(id)
+    const accountQuery = useGetCategory(id);
+    const editMutation = useEditCategory(id)
     const deleteMutation = useDeleteAccount(id)
     // const mutation = useCreateAccount();
 

@@ -1,7 +1,8 @@
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { insertAccountSchema } from "@/db/schema";
+import { Loader2 } from "lucide-react";
 import { z } from "zod";
-import { useCreateAccount } from "../api/use-create-account";
+import { useEditAccount } from "../api/use-edit-account";
 import { useGetAccount } from "../api/use-get-account";
 import { useOpenAccount } from "../hooks/use-open-account";
 import { AccountForm } from "./account-form";
@@ -15,10 +16,17 @@ type FormValues = z.input<typeof formSchema>;
 function EditAccountSheet() {
     const { isOpen, onClose, id } = useOpenAccount();
 
-    const accountQuery = useGetAccount(id)
-    const mutation = useCreateAccount()
+    const accountQuery = useGetAccount(id);
+    const editMutation = useEditAccount(id)
+    // const mutation = useCreateAccount();
+
+    const isPending = 
+    editMutation.isPending
+
+    const isLoading = accountQuery.isLoading
+
     const onSubmit = (values: FormValues) => {
-        mutation.mutate(values, {
+        editMutation.mutate(values, {
             onSuccess: () => {
                 onClose()
             }
@@ -35,17 +43,25 @@ function EditAccountSheet() {
           <SheetContent className="space-y-4">
               <SheetHeader>
                   <SheetTitle>
-                      New Account
+                      Edit Account
                   </SheetTitle>
                   <SheetDescription>
-                      Create a new account to track your transactions
+                      Edit an existing account
                   </SheetDescription>
               </SheetHeader>
-              <AccountForm
+              {isLoading ? (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                      <Loader2 className="size-4 text-muted-foreground animate-spin"/>
+                  </div>
+              ) : (
+                      <AccountForm
                   onSubmit={onSubmit}
-                  disabled={mutation.isPending}
+                  disabled={isPending}
                   defaultValues={defaultValues}
-              />
+              /> 
+              )
+              }
+             
           </SheetContent>
     </Sheet>
   )

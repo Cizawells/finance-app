@@ -1,7 +1,9 @@
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { insertAccountSchema } from "@/db/schema";
+import { useConfirm } from "@/hooks/use-confirm";
 import { Loader2 } from "lucide-react";
 import { z } from "zod";
+import { useDeleteAccount } from "../api/use-delete-account";
 import { useEditAccount } from "../api/use-edit-account";
 import { useGetAccount } from "../api/use-get-account";
 import { useOpenAccount } from "../hooks/use-open-account";
@@ -16,12 +18,18 @@ type FormValues = z.input<typeof formSchema>;
 function EditAccountSheet() {
     const { isOpen, onClose, id } = useOpenAccount();
 
+    const [ConfirmDialog, confirm] = useConfirm(
+        "Are you sure?",
+        "You are about to delete this transaction"
+    )
+
     const accountQuery = useGetAccount(id);
     const editMutation = useEditAccount(id)
+    const deleteMutation = useDeleteAccount(id)
     // const mutation = useCreateAccount();
 
     const isPending = 
-    editMutation.isPending
+    editMutation.isPending || deleteMutation.isPending
 
     const isLoading = accountQuery.isLoading
 
@@ -38,7 +46,20 @@ function EditAccountSheet() {
     } : {
         name: ""
     }
-  return (
+
+    const onDelete = async () => {
+        const ok = await confirm();
+        if (ok) {
+            deleteMutation.mutate(undefined, {
+                onSuccess: () => {
+                    onClose()
+                }
+            })
+        }
+    }
+    return (
+        <>
+            <ConfirmDialog />
       <Sheet open={isOpen} onOpenChange={onClose}>
           <SheetContent className="space-y-4">
               <SheetHeader>
@@ -57,13 +78,15 @@ function EditAccountSheet() {
                       <AccountForm
                   onSubmit={onSubmit}
                   disabled={isPending}
-                  defaultValues={defaultValues}
+                          defaultValues={defaultValues}
+                          onDelete={onDelete}
               /> 
               )
               }
              
           </SheetContent>
-    </Sheet>
+            </Sheet>
+            </>
   )
 }
 

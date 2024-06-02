@@ -3,7 +3,7 @@ import { insertAccountSchema } from "@/db/schema";
 import { useConfirm } from "@/hooks/use-confirm";
 import { Loader2 } from "lucide-react";
 import { z } from "zod";
-import { useDeleteAccount } from "../api/use-delete-account";
+import { useDeleteCategory } from "../api/use-delete-category";
 import { useEditCategory } from "../api/use-edit-category";
 import { useGetCategory } from "../api/use-get-category";
 import { useOpenCategory } from "../hooks/use-open-category";
@@ -25,7 +25,7 @@ function EditAccountSheet() {
 
     const accountQuery = useGetCategory(id);
     const editMutation = useEditCategory(id)
-    const deleteMutation = useDeleteAccount(id)
+    const deleteMutation = useDeleteCategory(id)
     // const mutation = useCreateAccount();
 
     const isPending = 

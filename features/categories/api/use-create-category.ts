@@ -7,7 +7,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 type ResponseType = InferResponseType<typeof client.api.categories.$post>
 type RequestType = InferRequestType<typeof client.api.categories.$post>["json"]
 
-export const useCreateAccount = () => {
+export const useCreateCategory = () => {
     const queryClient = useQueryClient();
 
     const mutation = useMutation<

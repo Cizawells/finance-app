@@ -1,10 +1,10 @@
 import { db } from "@/db/drizzle";
-import { categories, insertCategorySchema } from "@/db/schema";
+import { accounts, categories, insertCategorySchema, insertTransactioniSchema, transactions } from "@/db/schema";
 import { clerkMiddleware, getAuth } from "@hono/clerk-auth";
 import { zValidator } from "@hono/zod-validator";
 import { createId } from "@paralleldrive/cuid2";
 import { parse, subDays } from "date-fns";
-import { and, eq, inArray } from "drizzle-orm";
+import { and, desc, eq, gte, inArray, lte } from "drizzle-orm";
 import { Hono } from "hono";
 import { z } from "zod";
 
@@ -33,11 +33,24 @@ const app = new Hono()
 
             const data = await db
                 .select({
-                    id: categories.id,
-                    name: categories.name
-                }).from(categories)
-                .where(eq(categories.userId, auth.userId));
-            console.log("datttta", data)
+                    id: transactions.id,
+                    date: transactions.date,
+                    category: categories.name,
+                    categoryId: transactions.categoryId,
+                    payee: transactions.payee,
+                    amount: transactions.amount,
+                    notes: transactions.notes,
+                    account: accounts.name,
+                    accountId: transactions.accountId,
+                }).from(transactions)
+                .innerJoin(accounts, eq(transactions.accountId, accounts.id))
+                .leftJoin(categories, eq(transactions.categoryId, categories.id))
+                .where(and(
+                    accountId ? eq(transactions.accountId, accountId) : undefined,
+                    eq(accounts.userId, auth.userId),
+                    gte(transactions.date, startDate),
+                    lte(transactions.date, endDate),
+            )).orderBy(desc( transactions.date))
     return c.json({ data })
         })
     .get("/:id",
@@ -57,12 +70,18 @@ const app = new Hono()
             }
             const [data] = await db
                 .select({
-                    id: categories.id,
-                    name: categories.name
-                }).from(categories)
+                     id: transactions.id,
+                    date: transactions.date,
+                    categoryId: transactions.categoryId,
+                    payee: transactions.payee,
+                    amount: transactions.amount,
+                    notes: transactions.notes,
+                    accountId: transactions.accountId,
+                }).from(transactions)
+                .innerJoin(accounts, eq(transactions.accountId, accounts.id))
                 .where(and(
-                    eq(categories.userId, auth.userId),
-                    eq(categories.id, id)
+                    eq(transactions.id, id),
+                    eq(accounts.userId, auth.userId),
                 ));
             if (!data) {
                 return c.json({ error: "Not found"}, 404)
@@ -72,8 +91,8 @@ const app = new Hono()
     .post(
         "/",
         clerkMiddleware(),
-        zValidator("json", insertCategorySchema.pick({
-            name: true
+        zValidator("json", insertTransactioniSchema.omit({
+            id: true
         })),
         async (c) => {
             const auth = getAuth(c);
@@ -83,9 +102,8 @@ const app = new Hono()
                 return c.json({ error: "unauthorized"}, 401)
             }
 
-            const [data] = await db.insert(categories).values({
+            const [data] = await db.insert(transactions).values({
                 id: createId(),
-                userId: auth.userId,
                 ...values
             }).returning()
             return c.json({ data })

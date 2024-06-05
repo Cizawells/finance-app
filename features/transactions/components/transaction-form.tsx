@@ -11,6 +11,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { insertTransactionSchema } from "@/db/schema";
+import { convertAmountToMiliunits } from "@/lib/utils";
 import { Trash } from "lucide-react";
 
 const formSchema = z.object({
@@ -65,7 +66,13 @@ export const TransactionForm = ({
     });
     
     const handleSubmit = (values: FormValues) => {
-      console.log(values)
+        const amount = parseFloat(values.amount);
+        const amountInMiliunits = convertAmountToMiliunits(amount);
+
+        onSubmit({
+            ...values,
+            amount: amountInMiliunits
+        })
     }
     const handleDelete = () => {
         onDelete?.()
@@ -188,7 +195,7 @@ export const TransactionForm = ({
                     )}
                 />
                 <Button className="w-full" disabled={disabled}>
-                    {id ? "Save changes" : "Create account"}
+                    {id ? "Save changes" : "Create transaction"}
                 </Button>
                 {!!id &&
                     <Button

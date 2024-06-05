@@ -3,11 +3,13 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 
+import { AmountInput } from "@/components/amount-input";
 import { DatePicker } from "@/components/date-picker";
 import { Select } from "@/components/select";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { insertTransactionSchema } from "@/db/schema";
 import { Trash } from "lucide-react";
 
@@ -143,6 +145,43 @@ export const TransactionForm = ({
                                     placeholder="Add a payee"
                                 disabled={disabled}
                                     {...field}
+                                />
+                            </FormControl>
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    name="amount"
+                    control={form.control}
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>
+                                Amount
+                            </FormLabel>
+                            <FormControl>
+                                <AmountInput 
+                                    placeholder="0.00"
+                                disabled={disabled}
+                                    {...field}
+                                />
+                            </FormControl>
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    name="notes"
+                    control={form.control}
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>
+                                Notes
+                            </FormLabel>
+                            <FormControl>
+                                <Textarea
+                                    {...field}
+                                    value={field.value ?? ""}
+                                    placeholder="Optional notes"
+                                disabled={disabled}
                                 />
                             </FormControl>
                         </FormItem>

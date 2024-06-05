@@ -3,6 +3,8 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 
+import { DatePicker } from "@/components/date-picker";
+import { Select } from "@/components/select";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -61,7 +63,7 @@ export const TransactionForm = ({
     });
     
     const handleSubmit = (values: FormValues) => {
-        onSubmit(values)
+      console.log(values)
     }
     const handleDelete = () => {
         onDelete?.()
@@ -71,17 +73,75 @@ export const TransactionForm = ({
         <Form {...form} >
             <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4 pt-4">
                 <FormField
-                    name="name"
+                    name="date"
+                    control={form.control}
+                    render={({ field }) => (
+                        <FormItem>
+
+                            <FormControl>
+                                <DatePicker 
+                                    value={field.value}
+                                    onChange={field.onChange}
+                                    disabled={disabled}
+                                />
+                            </FormControl>
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    name="accountId"
                     control={form.control}
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel>
-                                Name
+                                Account
+                            </FormLabel>
+                            <FormControl>
+                                <Select 
+                                    placeholder="Select an account"
+                                    options={accountOptions}
+                                    onCreate={onCreateAccount}
+                                    value={field.value}
+                                    onChange={field.onChange}
+                                    disabled={disabled}
+                                />
+                            </FormControl>
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    name="categoryId"
+                    control={form.control}
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>
+                                Category
+                            </FormLabel>
+                            <FormControl>
+                                <Select 
+                                    placeholder="Select a category"
+                                    options={categoryOptions}
+                                    onCreate={onCreateCategory}
+                                    value={field.value}
+                                    onChange={field.onChange}
+                                    disabled={disabled}
+                                />
+                            </FormControl>
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    name="payee"
+                    control={form.control}
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>
+                                Payee
                             </FormLabel>
                             <FormControl>
                                 <Input 
-                                    disabled={disabled}
-                                    placeholder="e.g Cash, Bank, Credit Card"
+                                    placeholder="Add a payee"
+                                disabled={disabled}
                                     {...field}
                                 />
                             </FormControl>

@@ -119,7 +119,7 @@ function EditTransactionSheet() {
                                 id={id}
                                 defaultValues={defaultValues}
                                 onSubmit={onSubmit}
-                                onDelete={ondeviceorientationabsolute}
+                                onDelete={onDelete}
                   disabled={isPending}
                   categoryOptions={categoryOptions}
                   onCreateCategory={onCreateCategory}

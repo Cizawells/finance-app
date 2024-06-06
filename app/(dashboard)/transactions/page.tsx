@@ -13,11 +13,22 @@ import { useBulkDeleteTransactions } from "@/features/transactions/api/use-bulk-
 import { useGetTransactions } from "@/features/transactions/api/use-get-transactions"
 import { useNewTransaction } from "@/features/transactions/hooks/use-new-transaction"
 import { Loader2 } from "lucide-react"
+import { useState } from "react"
 import { columns } from "./columns"
 
+enum VARIANTS {
+    LIST = "LIST",
+    IMPORT = "IMPORT",
+}
 
+const INITIAL_IMPORT_RESULTS = {
+    data: [],
+    errors: [],
+    meta: {}
+}
 
 function TransactionsPage() {
+    const [variant, setVariant] = useState<VARIANTS>(VARIANTS.LIST)
     const newTransaction = useNewTransaction();
     const deleteTransactions = useBulkDeleteTransactions()
     const transactionsQuery = useGetTransactions();
@@ -57,7 +68,7 @@ function TransactionsPage() {
                   <DataTable
                       columns={columns}
                       data={transactions}
-                      filterKey="email"
+                      filterKey="payee"
                       onDelete={(row) => {
                           const ids = row.map((r) => r.original.id)
                           deleteTransactions.mutate({ ids })

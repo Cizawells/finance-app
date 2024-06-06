@@ -206,7 +206,7 @@ export const TransactionForm = ({
                         variant="outline"
                     >
                         <Trash className="size-4 mr-2" />
-                        Delete account
+                        Delete transaction
                     </Button>
                 }
                 </form>

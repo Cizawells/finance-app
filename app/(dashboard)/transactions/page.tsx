@@ -15,6 +15,8 @@ import { useNewTransaction } from "@/features/transactions/hooks/use-new-transac
 import { Loader2 } from "lucide-react"
 import { useState } from "react"
 import { columns } from "./columns"
+import ImportCard from "./import-card"
+import { UploadButton } from "./upload-button"
 
 enum VARIANTS {
     LIST = "LIST",
@@ -28,7 +30,21 @@ const INITIAL_IMPORT_RESULTS = {
 }
 
 function TransactionsPage() {
-    const [variant, setVariant] = useState<VARIANTS>(VARIANTS.LIST)
+    const [variant, setVariant] = useState<VARIANTS>(VARIANTS.LIST);
+    const [importResults, setImportResults] = useState(INITIAL_IMPORT_RESULTS);
+
+    const onUpload = (results: typeof INITIAL_IMPORT_RESULTS) => {
+        console.log({results})
+        setImportResults(results)
+        setVariant(VARIANTS.IMPORT)
+    }
+
+    const onCancelImport = () => {
+        setImportResults(INITIAL_IMPORT_RESULTS);
+        setVariant(VARIANTS.LIST)
+    }
+
+
     const newTransaction = useNewTransaction();
     const deleteTransactions = useBulkDeleteTransactions()
     const transactionsQuery = useGetTransactions();
@@ -53,6 +69,20 @@ function TransactionsPage() {
            </div> 
         )
     }
+
+    if (variant === VARIANTS.IMPORT) { 
+        return (
+            <>
+                <div>
+                    <ImportCard
+                        data={importResults.data}
+                        onCancel={onCancelImport}
+                        onSubmit={() => {}}
+                    />
+                </div>
+            </>
+        )
+    }
   return (
       <div className="max-w-screen-2xl mx-auto w-full pb-10 -mt-24">
           <Card className="border-none drop-shadow-sm">
@@ -60,9 +90,15 @@ function TransactionsPage() {
                   <CardTitle className="text-xl line-clamp-1">
                       Transaction history
                   </CardTitle>
-                  <Button onClick={newTransaction.onOpen} size="sm">
+                  <div className="flex items-center gap-2">
+                         <Button onClick={newTransaction.onOpen} size="sm">
                       Add new
                   </Button>
+                  <UploadButton
+                    onUpload={onUpload}
+                  />
+                  </div>
+               
               </CardHeader>
               <CardContent>
                   <DataTable

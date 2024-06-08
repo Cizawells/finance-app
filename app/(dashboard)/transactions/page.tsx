@@ -17,6 +17,7 @@ import { useState } from "react"
 import { columns } from "./columns"
 import ImportCard from "./import-card"
 import { UploadButton } from "./upload-button"
+import { transactions as transactionSchema} from "@/db/schema"
 
 enum VARIANTS {
     LIST = "LIST",
@@ -52,7 +53,13 @@ function TransactionsPage() {
 
     const isDisabled = 
         transactionsQuery.isLoading || 
-        deleteTransactions.isPending
+        deleteTransactions.isPending;
+
+        const onSubmitImport = async(
+            values: typeof transactionSchema.$inferInsert[],
+        ) => {
+            
+        }
     if (transactionsQuery.isLoading) {
         return (
             <div className="max-w-screen-2xl mx-auto w-full pb-10 -mt-24">
@@ -77,7 +84,7 @@ function TransactionsPage() {
                     <ImportCard
                         data={importResults.data}
                         onCancel={onCancelImport}
-                        onSubmit={() => {}}
+                        onSubmit={onSubmitImport}
                     />
                 </div>
             </>
@@ -90,8 +97,11 @@ function TransactionsPage() {
                   <CardTitle className="text-xl line-clamp-1">
                       Transaction history
                   </CardTitle>
-                  <div className="flex items-center gap-2">
-                         <Button onClick={newTransaction.onOpen} size="sm">
+                  <div className="flex flex-col lg:flex-row gap-y-2 items-center gap-2">
+                         <Button 
+                         className="w-full lg:w-auto"
+                         onClick={newTransaction.onOpen} 
+                         size="sm">
                       Add new
                   </Button>
                   <UploadButton

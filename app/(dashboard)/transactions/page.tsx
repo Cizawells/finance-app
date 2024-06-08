@@ -18,6 +18,8 @@ import { columns } from "./columns"
 import ImportCard from "./import-card"
 import { UploadButton } from "./upload-button"
 import { transactions as transactionSchema} from "@/db/schema"
+import { useSelectAccount } from "@/hooks/use-select-account"
+import { toast } from "sonner"
 
 enum VARIANTS {
     LIST = "LIST",
@@ -31,6 +33,7 @@ const INITIAL_IMPORT_RESULTS = {
 }
 
 function TransactionsPage() {
+    const [AccountDialog, comfirm] = useSelectAccount()
     const [variant, setVariant] = useState<VARIANTS>(VARIANTS.LIST);
     const [importResults, setImportResults] = useState(INITIAL_IMPORT_RESULTS);
 
@@ -58,7 +61,16 @@ function TransactionsPage() {
         const onSubmitImport = async(
             values: typeof transactionSchema.$inferInsert[],
         ) => {
-            
+            const accountId = await comfirm();
+
+            if(!accountId) {
+                return toast.error("Please select an account to continue")
+            }
+
+            const data = values.map((value) => ({
+                ...value,
+                accountId: accountId as string
+            }))
         }
     if (transactionsQuery.isLoading) {
         return (
@@ -80,13 +92,12 @@ function TransactionsPage() {
     if (variant === VARIANTS.IMPORT) { 
         return (
             <>
-                <div>
+                    <AccountDialog />
                     <ImportCard
                         data={importResults.data}
                         onCancel={onCancelImport}
                         onSubmit={onSubmitImport}
                     />
-                </div>
             </>
         )
     }

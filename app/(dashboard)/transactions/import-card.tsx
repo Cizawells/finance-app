@@ -56,7 +56,7 @@ function ImportCard({
             return newSelectedColumns
         })
     }
-
+ 
     const progress = Object.values(selectedColumns).filter(Boolean).length;
 
     const handleContinue = () => {
@@ -98,7 +98,8 @@ function ImportCard({
             date: format(parse(item.date, dateFormat, new Date()), outputFormat)
         }));
 
-        console.log({ formattedData })
+        onSubmit(formattedData)
+
     }
 
   return (

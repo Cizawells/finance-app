@@ -20,6 +20,7 @@ import { UploadButton } from "./upload-button"
 import { transactions as transactionSchema} from "@/db/schema"
 import { useSelectAccount } from "@/hooks/use-select-account"
 import { toast } from "sonner"
+import { useBulkCreateTransactions } from "@/features/transactions/api/use-bulk-create-transactions"
 
 enum VARIANTS {
     LIST = "LIST",
@@ -50,6 +51,7 @@ function TransactionsPage() {
 
 
     const newTransaction = useNewTransaction();
+    const createTransactions = useBulkCreateTransactions()
     const deleteTransactions = useBulkDeleteTransactions()
     const transactionsQuery = useGetTransactions();
     const transactions = transactionsQuery.data || [];
@@ -70,7 +72,13 @@ function TransactionsPage() {
             const data = values.map((value) => ({
                 ...value,
                 accountId: accountId as string
-            }))
+            }));
+
+            createTransactions.mutate(data, {
+                onSuccess: () => {
+                    onCancelImport()
+                }
+            })
         }
     if (transactionsQuery.isLoading) {
         return (

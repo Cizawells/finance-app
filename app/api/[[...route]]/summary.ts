@@ -159,7 +159,7 @@ const days = fillMissingDays(
      
         return c.json({
             data: {
-                remaingAmount: currentPeriod.remaining,
+                remainingAmount: currentPeriod.remaining,
                 remainingChange,
                 incomeAmount: currentPeriod.income,
                 incomeChange,

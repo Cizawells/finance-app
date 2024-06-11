@@ -1,7 +1,7 @@
-import { categories, transactions } from "@/db/schema";
+import { accounts, categories, transactions } from "@/db/schema";
 import { convertAmountToMiliunits } from "@/lib/utils";
 import { neon } from "@neondatabase/serverless";
-import { format, subDays } from "date-fns";
+import { eachDayOfInterval, format, subDays } from "date-fns";
 import { config } from "dotenv";
 import { drizzle } from "drizzle-orm/neon-http";
 
@@ -62,9 +62,9 @@ const generateTransactionsForDay = (day: Date) => {
         const formattedAmount = convertAmountToMiliunits(isExpense ? -amount : amount);
 
          SEED_TRANSCTIONS.push({
-        id: `transaction_${format(day, "yyy-MM-dd")}_${i}`,
+        id: `transaction_${format(day, "yyyy-MM-dd")}_${i}`,
         accountId: SEED_ACCOUNTS[0].id,
-        categoryId: category.id,
+        categoryId: category.id, 
         date: day,
         amount: formattedAmount,
         payee: "Merchant",
@@ -72,10 +72,33 @@ const generateTransactionsForDay = (day: Date) => {
 
     })
     }
-
-    // const generateTransactions = () => {
-    //     const days = eachO
-    // }
-
    
 }
+const generateTransactions = () => {
+    const days = eachDayOfInterval({ start: defaultFrom, end: defaultTo });
+    days.forEach(day => generateTransactionsForDay(day))
+}
+
+generateTransactions()
+
+const main = async () => {
+    try {
+        //Reset database
+        await db.delete(transactions).execute();
+        await db.delete(accounts).execute();
+        await db.delete(categories).execute();
+
+        // Seed categories
+        await db.insert(categories).values(SEED_CATEGORIES).execute();
+        //Seed accounts
+        await db.insert(accounts).values(SEED_ACCOUNTS).execute();
+        //Seed transactions
+        await db.insert(transactions).values(SEED_TRANSCTIONS).execute()
+
+    } catch (error) {
+        console.error("Error during seed", error);
+        process.exit(1)
+    }
+}
+
+main()
